@@ -16,21 +16,22 @@ const statistic = require('./routes/statistic');
 const crm = require('./routes/crm');
 const billing = require('./routes/billing');
 const chat = require('./routes/chat');
+const chatbot = require('./routes/chatbot');
 
 const mongoose = require('mongoose');
 const Message = require('./models/message')
 const User = require('./models/user')
 
 mongoose.connect(process.env.MONGO_URI, {
-    dbName: process.env.MONGO_DBNAME,
+  dbName: process.env.MONGO_DBNAME,
 })
-.then(() => {
+  .then(() => {
     console.log('Connected to MongoDB');
-})
-.catch((err) => {
+  })
+  .catch((err) => {
     console.error('MongoDB connection error:', err);
     process.exit(1);
-});
+  });
 
 const app = express();
 app.use(express.json());
@@ -57,6 +58,7 @@ app.use('/api/crm', crm);
 app.use('/api/tasks', task);
 app.use('/api/billing', billing);
 app.use('/api/chat', chat);
+app.use('/api/chatbot', chatbot);
 
 const io = require('socket.io')(server, {
   cors: {
