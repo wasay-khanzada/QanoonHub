@@ -1,0 +1,18 @@
+{
+  "documentType": "agreement",
+  "title": "Agreement",
+  "fields": [
+    { "name": "date", "label": "Agreement Date", "type": "date", "required": true },
+    { "name": "partyAName", "label": "First Party Name", "type": "text", "required": true },
+    { "name": "partyAFather", "label": "First Party Father Name", "type": "text", "required": true },
+    { "name": "partyACNIC", "label": "First Party CNIC", "type": "text", "required": true },
+    { "name": "partyAAddress", "label": "First Party Address", "type": "textarea", "required": true },
+    { "name": "partyBName", "label": "Second Party Name", "type": "text", "required": true },
+    { "name": "partyBFather", "label": "Second Party Father Name", "type": "text", "required": true },
+    { "name": "partyBCNIC", "label": "Second Party CNIC", "type": "text", "required": true },
+    { "name": "partyBAddress", "label": "Second Party Address", "type": "textarea", "required": true },
+    { "name": "purpose", "label": "Purpose of Agreement", "type": "textarea", "required": true },
+    { "name": "terms", "label": "Terms & Conditions", "type": "textarea", "required": true }
+  ],
+  "template": "AGREEMENT\n\nThis Agreement is made and executed on this {{date}} at Karachi.\n\nBETWEEN\n\n{{partyAName}}, son/daughter of {{partyAFather}}, CNIC No. {{partyACNIC}}, resident of {{partyAAddress}}, hereinafter referred to as the \"First Party\".\n\nAND\n\n{{partyBName}}, son/daughter of {{partyBFather}}, CNIC No. {{partyBCNIC}}, resident of {{partyBAddress}}, hereinafter referred to as the \"Second Party\".\n\nWHEREAS:\n\n1. That the First Party agrees to {{purpose}}.\n2. That the Second Party accepts the terms and conditions mentioned herein.\n3. That both parties shall abide by the laws of the Islamic Republic of Pakistan.\n\nTERMS & CONDITIONS:\n{{terms}}\n\nIN WITNESS WHEREOF, both parties have signed this Agreement on the date first written above.\n\nFirst Party Signature: _______________\n\nSecond Party Signature: _______________\n\nWitness 1: __________________ CNIC: ___________\nWitness 2: __________________ CNIC: ___________"
+}

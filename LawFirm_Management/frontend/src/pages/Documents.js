@@ -8,13 +8,17 @@ import {
   TrashIcon,
   EyeIcon,
   DocumentIcon,
-  DownloadIcon
+  ArrowDownTrayIcon,
+  DocumentTextIcon
 } from '@heroicons/react/24/outline';
 import DocumentModal from '../components/DocumentModal';
+import DocumentGeneratorModal from '../components/DocumentGeneratorModal';
+import { generateDocumentFile, downloadFile } from '../utils/documentApi';
 
 const Documents = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isGeneratorModalOpen, setIsGeneratorModalOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -53,7 +57,34 @@ const Documents = () => {
   };
 
   const handleViewDocument = (documentData) => {
-    window.open(documentData.doc_link_onlineDrive, '_blank');
+    if (documentData.doc_link_onlineDrive) {
+      window.open(documentData.doc_link_onlineDrive, '_blank');
+    } else {
+      toast.error('Document file not available');
+    }
+  };
+
+  const handleGenerateFromTemplate = async (documentData) => {
+    if (!documentData.template_data) {
+      toast.error('This document does not have template data');
+      return;
+    }
+
+    try {
+      // Show format selection
+      const format = window.confirm('Generate PDF? (OK for PDF, Cancel for DOCX)') ? 'pdf' : 'docx';
+      
+      toast.loading('Generating document...');
+      const blob = await generateDocumentFile(documentData._id, format, {});
+      const filename = `${documentData.doc_type}_${documentData._id}_${Date.now()}.${format}`;
+      downloadFile(blob, filename);
+      toast.dismiss();
+      toast.success('Document generated successfully!');
+      queryClient.invalidateQueries('documents');
+    } catch (error) {
+      toast.dismiss();
+      toast.error(error.response?.data?.error || 'Failed to generate document');
+    }
   };
 
   const formatFileSize = (bytes) => {
@@ -91,13 +122,22 @@ const Documents = () => {
           <h1 className="text-2xl font-bold text-white">Documents</h1>
           <p className="text-secondary-300">Manage your legal documents</p>
         </div>
-        <button
-          onClick={() => setIsCreateModalOpen(true)}
-          className="btn-primary flex items-center gap-2"
-        >
-          <PlusIcon className="h-5 w-5" />
-          Upload Document
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setIsGeneratorModalOpen(true)}
+            className="btn-primary flex items-center gap-2 bg-green-600 hover:bg-green-700"
+          >
+            <DocumentTextIcon className="h-5 w-5" />
+            Generate Document
+          </button>
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <PlusIcon className="h-5 w-5" />
+            Upload Document
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -177,6 +217,11 @@ const Documents = () => {
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-primary-600 bg-primary-100">
                         {document.doc_type}
                       </span>
+                      {document.template_data && (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-green-600 bg-green-100">
+                          Template
+                        </span>
+                      )}
                     </div>
                     
                     <p className="text-secondary-300 mb-3">
@@ -204,13 +249,23 @@ const Documents = () => {
                   </div>
 
                   <div className="flex items-center gap-2 ml-4">
-                    <button
-                      onClick={() => handleViewDocument(document)}
-                      className="p-2 text-secondary-400 hover:text-secondary-200"
-                      title="View Document"
-                    >
-                      <EyeIcon className="h-5 w-5" />
-                    </button>
+                    {document.template_data ? (
+                      <button
+                        onClick={() => handleGenerateFromTemplate(document)}
+                        className="p-2 text-green-400 hover:text-green-300"
+                        title="Generate Document File"
+                      >
+                        <ArrowDownTrayIcon className="h-5 w-5" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleViewDocument(document)}
+                        className="p-2 text-secondary-400 hover:text-secondary-200"
+                        title="View Document"
+                      >
+                        <EyeIcon className="h-5 w-5" />
+                      </button>
+                    )}
                     <button
                       onClick={() => handleEditDocument(document)}
                       className="p-2 text-secondary-400 hover:text-secondary-200"
@@ -258,6 +313,17 @@ const Documents = () => {
           onSuccess={() => {
             setIsEditModalOpen(false);
             setSelectedDocument(null);
+            queryClient.invalidateQueries('documents');
+          }}
+        />
+      )}
+
+      {isGeneratorModalOpen && (
+        <DocumentGeneratorModal
+          isOpen={isGeneratorModalOpen}
+          onClose={() => setIsGeneratorModalOpen(false)}
+          onSuccess={() => {
+            setIsGeneratorModalOpen(false);
             queryClient.invalidateQueries('documents');
           }}
         />

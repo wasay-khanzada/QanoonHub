@@ -1,0 +1,17 @@
+{
+  "documentType": "powerOfAttorney",
+  "title": "Special Power of Attorney",
+  "fields": [
+    { "name": "principalName", "label": "Principal Name", "type": "text", "required": true },
+    { "name": "principalFather", "label": "Principal Father Name", "type": "text", "required": true },
+    { "name": "principalCNIC", "label": "Principal CNIC", "type": "text", "required": true },
+    { "name": "principalAddress", "label": "Principal Address", "type": "textarea", "required": true },
+    { "name": "attorneyName", "label": "Attorney Name", "type": "text", "required": true },
+    { "name": "attorneyFather", "label": "Attorney Father Name", "type": "text", "required": true },
+    { "name": "attorneyCNIC", "label": "Attorney CNIC", "type": "text", "required": true },
+    { "name": "attorneyAddress", "label": "Attorney Address", "type": "textarea", "required": true },
+    { "name": "powers", "label": "Granted Powers", "type": "textarea", "required": true },
+    { "name": "date", "label": "Execution Date", "type": "date", "required": true }
+  ],
+  "template": "SPECIAL POWER OF ATTORNEY\n\nI, {{principalName}}, son/daughter of {{principalFather}}, CNIC No. {{principalCNIC}}, resident of {{principalAddress}}, do hereby appoint {{attorneyName}}, son/daughter of {{attorneyFather}}, CNIC No. {{attorneyCNIC}}, resident of {{attorneyAddress}}, as my lawful attorney.\n\nI hereby authorize my attorney to:\n{{powers}}\n\nI hereby undertake to ratify and confirm all lawful acts done by my attorney under this Power of Attorney.\n\nSigned at Karachi on this {{date}}.\n\nPRINCIPAL SIGNATURE: _______________\n\nCNIC: {{principalCNIC}}\n\nWITNESSES:\n\n1. Name: __________________ CNIC: ___________\n2. Name: __________________ CNIC: ___________"
+}

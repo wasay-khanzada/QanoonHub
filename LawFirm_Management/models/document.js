@@ -26,15 +26,15 @@ const validateArrayLength = (value) => {
 const documentSchema = new Schema({
     doc_link_file: {
         type: String,
-        required: true,
+        required: false,
     },
     doc_link_fileId: {
         type: String,
-        required: true,
+        required: false,
     },
     doc_link_onlineDrive: {
         type: String,
-        required: true,
+        required: false,
     },
     doc_type: {
         type: String,
@@ -45,7 +45,7 @@ const documentSchema = new Schema({
     },
     filesize: {
         type: Number,
-        required: true,
+        required: false,
     },
     uploaded_at: {
         type: String,
@@ -101,6 +101,10 @@ const documentSchema = new Schema({
         type: String,
         required: [true, "Doc_description is required"],
     },
+    template_data: {
+    type: Object,
+    default: null
+},
     doc_requested: {
         type: String
     }

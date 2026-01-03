@@ -1,0 +1,13 @@
+{
+  "documentType": "legalNotice",
+  "title": "Legal Notice",
+  "fields": [
+    { "name": "clientName", "label": "Client Name", "type": "text", "required": true },
+    { "name": "clientCNIC", "label": "Client CNIC", "type": "text", "required": true },
+    { "name": "clientAddress", "label": "Client Address", "type": "textarea", "required": true },
+    { "name": "issueDescription", "label": "Issue Description", "type": "textarea", "required": true },
+    { "name": "noticePeriod", "label": "Notice Period (Days)", "type": "number", "required": true },
+    { "name": "date", "label": "Notice Date", "type": "date", "required": true }
+  ],
+  "template": "LEGAL NOTICE\n\nUnder instructions and on behalf of my client {{clientName}}, CNIC No. {{clientCNIC}}, resident of {{clientAddress}}, I hereby serve you with the following legal notice:\n\nThat you {{issueDescription}}.\n\nDespite repeated requests, you have failed to resolve the matter. Therefore, you are hereby called upon to comply with my client’s lawful demand within {{noticePeriod}} days from the receipt of this notice.\n\nFailing which, my client shall be constrained to initiate appropriate legal proceedings against you before the competent court of law in Sindh, at your risk as to cost and consequences.\n\nThis notice is issued without prejudice to all other legal rights and remedies.\n\nADVOCATE HIGH COURT\nKarachi\n\nDate: {{date}}"
+}

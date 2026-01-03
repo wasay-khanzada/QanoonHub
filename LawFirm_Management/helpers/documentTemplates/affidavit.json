@@ -1,0 +1,15 @@
+{
+  "documentType": "affidavit",
+  "title": "Affidavit",
+  "fields": [
+    { "name": "name", "label": "Full Name", "type": "text", "required": true },
+    { "name": "fatherName", "label": "Father / Husband Name", "type": "text", "required": true },
+    { "name": "cnic", "label": "CNIC Number", "type": "text", "required": true },
+    { "name": "address", "label": "Residential Address", "type": "textarea", "required": true },
+    { "name": "caseTitle", "label": "Case Title", "type": "text", "required": true },
+    { "name": "caseNumber", "label": "Case Number", "type": "text", "required": true },
+    { "name": "statement", "label": "Statement on Oath", "type": "textarea", "required": true },
+    { "name": "date", "label": "Date", "type": "date", "required": true }
+  ],
+  "template": "AFFIDAVIT\n\nI, {{name}}, son/daughter of {{fatherName}}, holding CNIC No. {{cnic}}, resident of {{address}}, do hereby solemnly affirm and declare as under:\n\n1. That I am the deponent of this affidavit and fully competent to swear the same.\n2. That the contents of this affidavit are true and correct to the best of my knowledge and belief.\n3. That this affidavit is submitted in connection with the case titled \"{{caseTitle}}\", bearing Case No. {{caseNumber}}.\n\nSTATEMENT:\n{{statement}}\n\nVerified on oath at Karachi on this {{date}} that the contents of this affidavit are true and correct.\n\nDEPONENT\n\nSignature: ____________________\nCNIC: {{cnic}}"
+}

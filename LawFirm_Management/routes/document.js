@@ -4,6 +4,8 @@ const router = express.Router();
 const documentController = require('../controllers/documentController')
 const { requireAuth, requireLawyerAndAdmin, requireAdmin } = require('../middlewares/authMiddleware')
 const upload = multer({ dest: 'uploads/' })
+const { generateTemplateDocument } = require("../controllers/documentController");
+
 
 router.get('/all', requireAuth, documentController.listDoc) // get list of documents
 router.get('/cases/user', requireAuth, documentController.getUserCases) // get user cases for document upload
@@ -12,5 +14,6 @@ router.get('/:id/:caseId', requireAuth, documentController.readDoc) // get only 
 router.post('/', requireAuth, upload.single('docUpload'), documentController.createDoc) // upload new document
 router.put('/', requireAuth, documentController.updateDoc) // edit selected document
 router.delete('/:id/:caseId', requireAuth, documentController.deleteDoc) // delete a document
+router.post("/generate-template", requireAuth, generateTemplateDocument);
 
 module.exports = router;
