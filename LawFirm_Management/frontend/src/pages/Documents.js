@@ -31,23 +31,29 @@ const Documents = () => {
   });
 
   const deleteDocumentMutation = useMutation(
-    async (documentId) => {
-      await axios.delete(`/api/documents/${documentId}/${selectedDocument?.doc_case_related}`);
+    async ({ documentId, caseId }) => {
+      await axios.delete(`/api/documents/${documentId}/${caseId}`);
     },
     {
       onSuccess: () => {
         queryClient.invalidateQueries('documents');
         toast.success('Document deleted successfully');
+        setSelectedDocument(null);
       },
       onError: () => {
         toast.error('Failed to delete document');
+        setSelectedDocument(null);
       },
     }
   );
 
-  const handleDeleteDocument = (documentId) => {
+  const handleDeleteDocument = (documentId, documentData) => {
     if (window.confirm('Are you sure you want to delete this document?')) {
-      deleteDocumentMutation.mutate(documentId);
+      // Pass both documentId and caseId to the mutation
+      deleteDocumentMutation.mutate({ 
+        documentId, 
+        caseId: documentData.doc_case_related 
+      });
     }
   };
 
@@ -56,9 +62,37 @@ const Documents = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleViewDocument = (documentData) => {
+  const handleViewDocument = async (documentData) => {
+    // Check if document has online drive link
     if (documentData.doc_link_onlineDrive) {
-      window.open(documentData.doc_link_onlineDrive, '_blank');
+      // If it's a full URL, open directly
+      if (documentData.doc_link_onlineDrive.startsWith('http://') || documentData.doc_link_onlineDrive.startsWith('https://')) {
+        window.open(documentData.doc_link_onlineDrive, '_blank');
+      } else {
+        // If it's a relative path, construct full URL
+        const baseUrl = window.location.origin;
+        window.open(`${baseUrl}${documentData.doc_link_onlineDrive}`, '_blank');
+      }
+    } else if (documentData.doc_link_file) {
+      // Fallback to doc_link_file
+      const baseUrl = window.location.origin;
+      window.open(`${baseUrl}${documentData.doc_link_file}`, '_blank');
+    } else if (documentData._id && documentData.doc_case_related) {
+      // If no file link, try to view via API endpoint
+      try {
+        const response = await axios.get(`/api/documents/${documentData._id}/${documentData.doc_case_related}`);
+        if (response.data.doc_link_onlineDrive) {
+          const baseUrl = window.location.origin;
+          window.open(`${baseUrl}${response.data.doc_link_onlineDrive}`, '_blank');
+        } else if (response.data.doc_link_file) {
+          const baseUrl = window.location.origin;
+          window.open(`${baseUrl}${response.data.doc_link_file}`, '_blank');
+        } else {
+          toast.error('Document file not available');
+        }
+      } catch (error) {
+        toast.error('Failed to load document');
+      }
     } else {
       toast.error('Document file not available');
     }
@@ -274,7 +308,7 @@ const Documents = () => {
                       <PencilIcon className="h-5 w-5" />
                     </button>
                     <button
-                      onClick={() => handleDeleteDocument(document._id)}
+                      onClick={() => handleDeleteDocument(document._id, document)}
                       className="p-2 text-red-400 hover:text-red-300"
                       title="Delete"
                     >

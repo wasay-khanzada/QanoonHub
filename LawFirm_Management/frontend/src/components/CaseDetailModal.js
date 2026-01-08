@@ -79,8 +79,23 @@ const CaseDetailModal = ({ isOpen, onClose, caseData }) => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-500">Created By</label>
-                <p className="text-sm text-gray-900">{caseData.case_created_by}</p>
+                <label className="block text-sm font-medium text-gray-500">Client</label>
+                <p className="text-sm text-gray-900">
+                  {caseData.client_id?.username || caseData.client_id || 'N/A'}
+                </p>
+                {caseData.client_id?.email && (
+                  <p className="text-xs text-gray-500">{caseData.client_id.email}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Assigned Lawyer</label>
+                <p className="text-sm text-gray-900">
+                  {caseData.assigned_lawyer_id?.username || caseData.assigned_lawyer_id || 'Not Assigned'}
+                </p>
+                {caseData.assigned_lawyer_id?.email && (
+                  <p className="text-xs text-gray-500">{caseData.assigned_lawyer_id.email}</p>
+                )}
               </div>
               
               <div>
@@ -110,28 +125,42 @@ const CaseDetailModal = ({ isOpen, onClose, caseData }) => {
             <div className="bg-gray-50 rounded-lg p-4">
               {caseData.case_member_list && caseData.case_member_list.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {caseData.case_member_list.map((member, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-white rounded border">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {member.case_member_id}
-                        </p>
-                        <p className="text-xs text-gray-500 capitalize">
-                          {member.case_member_type} • {member.case_member_role}
-                        </p>
+                  {caseData.case_member_list.map((member, index) => {
+                    // Handle populated case_member_id (object) or plain ID (string)
+                    const memberName = typeof member.case_member_id === 'object' 
+                      ? member.case_member_id?.username || member.case_member_id?._id || 'Unknown'
+                      : member.case_member_id || 'Unknown';
+                    
+                    const memberEmail = typeof member.case_member_id === 'object' 
+                      ? member.case_member_id?.email 
+                      : null;
+
+                    return (
+                      <div key={index} className="flex items-center justify-between p-3 bg-white rounded border">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {memberName}
+                          </p>
+                          {memberEmail && (
+                            <p className="text-xs text-gray-500">{memberEmail}</p>
+                          )}
+                          <p className="text-xs text-gray-500 capitalize mt-1">
+                            {member.case_member_type || 'member'} • {member.case_member_role || 'member'}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <button 
+                            onClick={() => setIsChatOpen(true)}
+                            className="text-blue-600 hover:text-blue-800 flex items-center space-x-1"
+                            title="Open Chat"
+                          >
+                            <ChatBubbleLeftIcon className="h-4 w-4" />
+                            <span className="text-xs">Chat</span>
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <button 
-                          onClick={() => setIsChatOpen(true)}
-                          className="text-blue-600 hover:text-blue-800 flex items-center space-x-1"
-                          title="Open Chat"
-                        >
-                          <ChatBubbleLeftIcon className="h-4 w-4" />
-                          <span className="text-xs">Chat</span>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-sm text-gray-500 text-center py-4">
@@ -148,12 +177,6 @@ const CaseDetailModal = ({ isOpen, onClose, caseData }) => {
               className="btn-secondary"
             >
               Close
-            </button>
-            <button className="btn-primary">
-              View Documents
-            </button>
-            <button className="btn-primary">
-              View Tasks
             </button>
           </div>
         </div>

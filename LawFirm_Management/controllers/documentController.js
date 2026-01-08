@@ -172,10 +172,27 @@ const readDoc = async (req, res) => {
 }
 
 const listDoc = async (req, res) => {
+    const { userId, type } = getUserInfo(res)
     try {
-        const allDocument = await Document.find({})
+        // Filter documents based on user access
+        let filter = {};
+        
+        if (type !== "admin") {
+            // Non-admin users can only see documents they have access to
+            filter = {
+                "can_be_access_by": userId
+            };
+        }
+        // Admin can see all documents, so no filter needed
+
+        const allDocument = await Document.find(filter)
         let updatedCaseDocs = []
         for (const doc of allDocument) {
+            // Double-check access for non-admin users (additional security)
+            if (type !== "admin" && !doc.can_be_access_by.includes(userId)) {
+                continue; // Skip this document if user doesn't have access
+            }
+
             const uploadUserId = doc.uploaded_by
             let uploadedByUserName = await User.findById(new mongoose.Types.ObjectId(uploadUserId)).select(['username', 'avatar_url']);
 

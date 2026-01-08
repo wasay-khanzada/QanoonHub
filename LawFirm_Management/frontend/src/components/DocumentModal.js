@@ -5,7 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { XMarkIcon, DocumentIcon } from '@heroicons/react/24/outline';
 
-const DocumentModal = ({ isOpen, onClose, mode = 'create', documentData = null }) => {
+const DocumentModal = ({ isOpen, onClose, mode = 'create', document = null }) => {
   const [formData, setFormData] = useState({
     doc_title: '',
     doc_description: '',
@@ -38,16 +38,16 @@ const DocumentModal = ({ isOpen, onClose, mode = 'create', documentData = null }
   });
 
   useEffect(() => {
-    if (mode === 'edit' && documentData) {
+    if (mode === 'edit' && document) {
       setFormData({
-        doc_title: documentData.doc_title || '',
-        doc_description: documentData.doc_description || '',
-        doc_type: documentData.doc_type || '',
-        doc_case_related: documentData.doc_case_related || '',
-        can_be_access_by: documentData.can_be_access_by || []
+        doc_title: document.doc_title || '',
+        doc_description: document.doc_description || '',
+        doc_type: document.doc_type || '',
+        doc_case_related: document.doc_case_related || '',
+        can_be_access_by: document.can_be_access_by || []
       });
     }
-  }, [mode, documentData]);
+  }, [mode, document]);
 
   const uploadDocumentMutation = useMutation(
     async (formDataToSend) => {
@@ -83,8 +83,8 @@ const DocumentModal = ({ isOpen, onClose, mode = 'create', documentData = null }
     async (data) => {
       await axios.put('/api/documents', {
         q: {
-          q_id: documentData._id,
-          q_caseId: documentData.doc_case_related
+          q_id: document._id,
+          q_caseId: document.doc_case_related
         },
         ...data
       });
@@ -153,6 +153,15 @@ const DocumentModal = ({ isOpen, onClose, mode = 'create', documentData = null }
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Show info for template documents that can't be edited as uploaded files */}
+          {mode === 'edit' && document && document.template_data && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+              <p className="text-sm text-yellow-800">
+                <strong>Note:</strong> This is a template-based document. You can only edit metadata (title, description, type). To generate the actual file, use the Generate button.
+              </p>
+            </div>
+          )}
+
           {mode === 'create' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

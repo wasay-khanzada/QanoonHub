@@ -8,14 +8,17 @@ import {
   ClockIcon,
   UserGroupIcon,
   PlusIcon,
-  ChatBubbleLeftIcon
+  ChatBubbleLeftIcon,
+  EyeIcon
 } from '@heroicons/react/24/outline';
 import CaseChat from '../components/CaseChat';
+import CaseDetailModal from '../components/CaseDetailModal';
 
 const LawyerDashboard = () => {
   const [selectedCase, setSelectedCase] = useState(null);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [applicationData, setApplicationData] = useState({
     message: '',
     proposed_fee: 0
@@ -63,6 +66,11 @@ const LawyerDashboard = () => {
   const handleOpenChat = (caseData) => {
     setSelectedCase(caseData);
     setIsChatOpen(true);
+  };
+
+  const handleViewCase = (caseData) => {
+    setSelectedCase(caseData);
+    setIsDetailModalOpen(true);
   };
 
   const getStatusColor = (status) => {
@@ -177,6 +185,13 @@ const LawyerDashboard = () => {
                     )}
                   </div>
                   <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handleViewCase(caseItem)}
+                      className="p-2 text-gray-400 hover:text-gray-600"
+                      title="View Details"
+                    >
+                      <EyeIcon className="h-5 w-5" />
+                    </button>
                     {caseItem.case_status === 'Open' && (
                       <button
                         onClick={() => handleApplyForCase(caseItem)}
@@ -259,6 +274,18 @@ const LawyerDashboard = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Detail Modal */}
+      {isDetailModalOpen && selectedCase && (
+        <CaseDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => {
+            setIsDetailModalOpen(false);
+            setSelectedCase(null);
+          }}
+          caseData={selectedCase}
+        />
       )}
 
       {/* Chat Modal */}

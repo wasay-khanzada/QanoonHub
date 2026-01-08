@@ -5,7 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 const conversationSessions = new Map();
 
 // System prompt
-const SYSTEM_PROMPT = `You are a helpful legal assistant for CaseAce, a law firm management system.
+const SYSTEM_PROMPT = `You are a helpful legal assistant for QanoonHub, a law firm management system.
 You help users with general legal questions, case management guidance, and navigating the application.
 Provide professional, accurate, and helpful responses. If a question is beyond your knowledge or requires
 specific legal advice, recommend consulting with a qualified attorney.`;

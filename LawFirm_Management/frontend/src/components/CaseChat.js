@@ -157,8 +157,49 @@ const CaseChat = ({ caseId, isOpen, onClose }) => {
   };
 
   const formatTime = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (!timestamp) return 'Unknown time';
+    
+    try {
+      // Handle both string and number timestamps
+      let date;
+      if (typeof timestamp === 'string') {
+        // Check if it's a numeric string
+        if (/^\d+$/.test(timestamp)) {
+          date = new Date(parseInt(timestamp));
+        } else {
+          date = new Date(timestamp);
+        }
+      } else {
+        date = new Date(timestamp);
+      }
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return 'Invalid time';
+      }
+      
+      // Format time with date if older than today
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      
+      if (messageDate.getTime() === today.getTime()) {
+        // Today - show only time
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      } else {
+        // Older - show date and time
+        return date.toLocaleString([], { 
+          year: 'numeric',
+          month: 'short', 
+          day: 'numeric',
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+      }
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return 'Invalid time';
+    }
   };
 
   const isOwnMessage = (messageSenderId) => {
